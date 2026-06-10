@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>LOVE QUEST</title>
+  <title>LOVE QUEST ♥</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♥</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     /* =========================================================
@@ -506,6 +507,7 @@
     }
     .hearts-field-wrap { position: relative; }
     .hearts-field {
+      position: relative;
       width: 100%;
       height: 68vh;
       max-height: 440px;
@@ -513,6 +515,8 @@
       box-shadow: 0 0 12px var(--purple);
       background: #0d0010;
       overflow: hidden;
+      -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
     }
     .falling-heart {
       position: absolute;
@@ -631,17 +635,383 @@
     .song-feedback { margin-top: 16px; font-size: 11px; min-height: 22px; text-align: center; }
     .song-feedback.wrong-text   { color: var(--red);   text-shadow: 0 0 8px var(--red);   }
     .song-feedback.correct-text { color: var(--green); text-shadow: 0 0 8px var(--green); }
+
+    /* =========================================================
+       КЛЮЧ ПОЛУЧЕН — счётчик
+       ========================================================= */
+    .key-won-count {
+      font-size: 9px;
+      color: var(--dim);
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+    }
+
+    /* =========================================================
+       ИГРА 4 — ЛАБИРИНТ
+       ========================================================= */
+    .maze-wrap { text-align: center; }
+    .maze-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .maze-header .game-title-sm { margin-bottom: 0; }
+    .maze-steps { font-size: 7px; color: var(--green); }
+    .maze-grid {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      width: 100%;
+      max-width: 352px;
+      margin: 0 auto;
+      gap: 1px;
+      background: #0d0018;
+      border: 3px solid var(--green);
+      box-shadow: 0 0 12px var(--green), 0 0 28px var(--green);
+      touch-action: none;
+      user-select: none;
+    }
+    .maze-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      line-height: 1;
+    }
+    .maze-cell.wall        { background: #1e0030; }
+    .maze-cell.path        { background: #050008; }
+    .maze-cell.player-cell { background: #050008; color: var(--green); text-shadow: 0 0 8px var(--green); }
+    .maze-cell.goal-cell   { background: #050008; color: var(--purple); animation: goalPulse 1s ease-in-out infinite; }
+    .maze-cell.win-cell    { background: #001a04 !important; animation: cellWin 0.35s ease; }
+    @keyframes goalPulse {
+      0%,100% { text-shadow: 0 0 6px var(--purple); }
+      50%     { text-shadow: 0 0 20px var(--purple), 0 0 40px var(--purple); }
+    }
+    @keyframes cellWin {
+      0%,100% { filter: brightness(1); }
+      50%     { filter: brightness(3); }
+    }
+    .maze-arrows { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 14px; }
+    .maze-arrow-row { display: flex; gap: 6px; }
+    .maze-arrow-btn {
+      background: transparent;
+      border: 3px solid var(--green);
+      box-shadow: 0 0 6px var(--green);
+      width: 50px; height: 50px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      transition: background 0.1s;
+    }
+    .maze-arrow-btn:active { background: var(--green); }
+    /* CSS triangle arrows — always identical size */
+    .maze-arrow-btn::after { content: ''; display: block; pointer-events: none; }
+    .maze-arr-u::after { border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 15px solid var(--green); }
+    .maze-arr-d::after { border-left: 9px solid transparent; border-right: 9px solid transparent; border-top:    15px solid var(--green); }
+    .maze-arr-l::after { border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-right:  15px solid var(--green); }
+    .maze-arr-r::after { border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left:   15px solid var(--green); }
+    .maze-arr-u:active::after { border-bottom-color: var(--bg); }
+    .maze-arr-d:active::after { border-top-color:    var(--bg); }
+    .maze-arr-l:active::after { border-right-color:  var(--bg); }
+    .maze-arr-r:active::after { border-left-color:   var(--bg); }
+    .maze-status { margin-top: 10px; font-size: 11px; color: var(--green); text-shadow: 0 0 8px var(--green); min-height: 20px; }
+
+    /* =========================================================
+       ИГРА 5 — СЛОВО
+       ========================================================= */
+    .word-wrap { text-align: center; }
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      min-height: 60px;
+      margin-bottom: 16px;
+      padding: 10px;
+      border: 2px solid #2a002a;
+      background: #08000e;
+    }
+    .word-slots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .letter-tile {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: var(--green);
+      background: #0a0020;
+      border: 3px solid var(--green);
+      box-shadow: 0 0 6px var(--green);
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .letter-tile:hover  { transform: scale(1.1); box-shadow: 0 0 14px var(--green); }
+    .letter-tile:active { transform: scale(0.9); }
+    .letter-slot {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: var(--white);
+      background: #050010;
+      border: 3px solid var(--dim);
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: default;
+      user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .letter-slot.filled       { border-color: var(--purple); color: var(--purple); box-shadow: 0 0 6px var(--purple); cursor: pointer; }
+    .letter-slot.correct-slot { border-color: var(--green)  !important; color: var(--green)  !important; box-shadow: 0 0 12px var(--green)  !important; animation: slotFlash 0.4s ease; }
+    .letter-slot.wrong-slot   { border-color: var(--red)    !important; color: var(--red)    !important; box-shadow: 0 0 12px var(--red)    !important; animation: slotFlash 0.4s ease; }
+    @keyframes slotFlash {
+      0%,100% { filter: brightness(1);   }
+      50%     { filter: brightness(2.5); }
+    }
+    .word-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .word-ctrl-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      background: transparent;
+      color: var(--dim);
+      border: 2px solid var(--dim);
+      padding: 8px 12px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .word-ctrl-btn:hover { color: var(--white); border-color: var(--white); }
+    .word-hint   { font-size: 7px; color: var(--dim); min-height: 18px; margin-bottom: 8px; }
+    .word-status { font-size: 11px; min-height: 22px; text-align: center; margin-top: 8px; }
+    .word-status.correct-text { color: var(--green); text-shadow: 0 0 8px var(--green); }
+    .word-status.wrong-text   { color: var(--red);   text-shadow: 0 0 8px var(--red);   }
+
+    /* =========================================================
+       ИГРА 6 — ЛЮБОВЬ
+       ========================================================= */
+    .love-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 72vh;
+      text-align: center;
+      padding: 0 8px;
+    }
+    .love-text  { font-size: 8px; color: var(--dim); line-height: 2.4; margin-bottom: 28px; }
+    .love-heart-btn {
+      font-size: 80px;
+      line-height: 1;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--purple);
+      text-shadow: 0 0 16px var(--purple), 0 0 36px var(--purple);
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      position: relative;
+      transition: transform 0.1s;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .love-heart-btn:active { transform: scale(0.88); }
+    .love-counter { font-size: 20px; color: var(--purple); text-shadow: 0 0 12px var(--purple); margin-bottom: 12px; min-height: 28px; }
+    .love-extra   { font-size: 8px; color: var(--dim); min-height: 20px; margin-bottom: 24px; }
+    .love-mini-heart {
+      position: fixed;
+      font-size: 18px;
+      pointer-events: none;
+      color: var(--red);
+      animation: miniFloat 0.85s ease forwards;
+    }
+    @keyframes miniFloat {
+      0%   { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.4); }
+    }
+    /* =========================================================
+       ИНТРО ЭКРАН
+       ========================================================= */
+    .intro-inner {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; padding: 32px 20px; text-align: center;
+    }
+    .intro-line {
+      font-size: 12px; color: var(--green);
+      text-shadow: 0 0 10px var(--green);
+      line-height: 2.4; min-height: 30px;
+      margin-bottom: 10px; letter-spacing: 1px;
+    }
+    @media (min-width: 420px) { .intro-line { font-size: 14px; } }
+    .intro-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px; background: transparent;
+      border: 4px solid var(--green); color: var(--green);
+      padding: 16px 28px; cursor: pointer;
+      text-shadow: 0 0 8px var(--green);
+      box-shadow: 0 0 14px var(--green);
+      margin-top: 36px;
+      -webkit-tap-highlight-color: transparent; outline: none;
+      animation: pulseBtnGlow 1.4s ease-in-out infinite;
+    }
+    @keyframes pulseBtnGlow {
+      0%,100% { box-shadow: 0 0 10px var(--green); }
+      50%     { box-shadow: 0 0 22px var(--green), 0 0 44px var(--green); }
+    }
+    /* Scanline wipe transition */
+    #scanline-wipe {
+      position: fixed; inset: 0; z-index: 9990;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, var(--bg) 0px, var(--bg) 3px, transparent 3px, transparent 6px
+      );
+      transform: translateY(-100%);
+    }
+    #scanline-wipe.wiping { animation: scanWipe 0.55s ease-in-out forwards; }
+    @keyframes scanWipe {
+      0%   { transform: translateY(-100%); opacity: 1; }
+      55%  { transform: translateY(0%);    opacity: 1; }
+      100% { transform: translateY(100%);  opacity: 0; }
+    }
+    /* =========================================================
+       ФИНАЛЬНЫЙ ЭКРАН СУНДУКА
+       ========================================================= */
+    #chest-finale-screen {
+      position: fixed; inset: 0; z-index: 500;
+      background: #000; overflow-y: auto;
+      display: none; flex-direction: column;
+      align-items: center;
+    }
+    #chest-finale-screen.active-finale { display: flex; }
+    .stars-bg {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+    }
+    .star {
+      position: absolute; width: 3px; height: 3px;
+      background: #fff; border-radius: 50%;
+      animation: starBlink var(--d, 2s) ease-in-out infinite;
+      animation-delay: var(--del, 0s);
+    }
+    @keyframes starBlink {
+      0%,100% { opacity: 0.12; transform: scale(0.8); }
+      50%     { opacity: 1;    transform: scale(1.7); }
+    }
+    .chest-finale-inner {
+      position: relative; z-index: 1;
+      text-align: center;
+      width: 100%; max-width: 520px;
+      padding: 60px 20px 50px;
+      margin: auto;
+    }
+    .finale-chest-icon {
+      font-size: 80px; line-height: 1;
+      display: block; transform-origin: center;
+    }
+    @keyframes finaleGrow {
+      0%   { transform: scale(1); }
+      100% { transform: scale(3); }
+    }
+    @keyframes finaleShake {
+      0%,100% { transform: scale(3) rotate(0deg);  }
+      25%     { transform: scale(3) rotate(-9deg); }
+      50%     { transform: scale(3) rotate(9deg);  }
+      75%     { transform: scale(3) rotate(-5deg); }
+    }
+    .finale-particle {
+      position: fixed; width: 8px; height: 8px;
+      pointer-events: none; z-index: 600;
+      animation: pFly var(--dur, 0.9s) ease forwards;
+    }
+    @keyframes pFly {
+      0%   { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--px),var(--py)) scale(0); }
+    }
+    .finale-content { margin-top: 60px; animation: fadeIn 1s ease forwards; }
+    .finale-message {
+      font-size: 9px; color: var(--white); line-height: 2.8;
+      text-shadow: 0 0 12px var(--purple); margin-bottom: 32px;
+    }
+    @media (min-width: 420px) { .finale-message { font-size: 10px; } }
+    .finale-video {
+      width: 100%; max-width: 440px; display: block; margin: 0 auto 28px;
+      border: 4px solid var(--green);
+      box-shadow: 0 0 14px var(--green), 0 0 30px var(--green);
+    }
+    .finale-names-row {
+      font-size: 11px; color: var(--purple);
+      text-shadow: 0 0 10px var(--purple);
+      letter-spacing: 3px; margin-top: 8px;
+    }
+    .finale-heart-ico {
+      color: var(--red); text-shadow: 0 0 10px var(--red);
+      animation: heartBeat 1s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes heartBeat {
+      0%,100% { transform: scale(1); }
+      40%     { transform: scale(1.35); }
+    }
+    /* Reset button */
+    .reset-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px; background: transparent;
+      border: 1px solid #333; color: #3a3a3a;
+      padding: 7px 12px; cursor: pointer;
+      margin: 20px auto 0; display: block;
+      -webkit-tap-highlight-color: transparent; outline: none;
+    }
+    .reset-btn:hover, .reset-btn:focus { border-color: var(--red); color: var(--red); }
+    .love-heart-btn.exploding {
+      animation: heartExplode 0.9s ease forwards !important;
+      pointer-events: none;
+      transition: none;
+    }
+    @keyframes heartExplode {
+      0%   { transform: scale(1);   opacity: 1; text-shadow: 0 0 16px var(--purple), 0 0 36px var(--purple); }
+      45%  { transform: scale(3.8); opacity: 1; text-shadow: 0 0 80px var(--purple), 0 0 160px var(--purple), 0 0 260px #fff; }
+      100% { transform: scale(6);   opacity: 0; }
+    }
+    .love-mini-heart.big-burst {
+      font-size: 26px;
+      animation-duration: 1.1s;
+    }
   </style>
 </head>
 <body>
 
 <!-- CRT эффект поверх всего -->
 <div class="scanlines" aria-hidden="true"></div>
+<!-- Переход-вайп (scanline sweep) -->
+<div id="scanline-wipe" aria-hidden="true"></div>
+
+<!-- ===========================================================
+     ИНТРО ЭКРАН
+     =========================================================== -->
+<div id="intro-screen" class="screen active">
+  <div class="intro-inner">
+    <p class="intro-line" id="intro-line1"></p>
+    <p class="intro-line" id="intro-line2"></p>
+    <p class="intro-line" id="intro-line3"></p>
+    <button class="intro-btn" id="intro-btn" style="display:none" onclick="startFromIntro()">НАЧАТЬ ▶</button>
+  </div>
+</div>
 
 <!-- ===========================================================
      ГЛАВНЫЙ ЭКРАН
      =========================================================== -->
-<div id="main-screen" class="screen active">
+<div id="main-screen" class="screen">
   <div class="main-container">
 
     <header class="title-section">
@@ -663,8 +1033,9 @@
         <span class="chest-emoji" id="chest-emoji">🗝️</span>
         <p class="chest-status" id="chest-status">ЗАБЛОКИРОВАНО</p>
       </div>
-      <div class="chest-content" id="chest-content" role="region" aria-label="Содержимое сундука"></div>
     </div>
+
+    <button class="reset-btn" onclick="resetProgress()">СБРОСИТЬ ПРОГРЕСС</button>
 
   </div>
 </div>
@@ -713,7 +1084,7 @@
   <div class="game-screen-inner">
     <button class="back-btn" onclick="goBack()">← НАЗАД</button>
     <div class="song-wrap">
-      <h2 class="game-title-sm">УГАДАЙ ПЕСНЮ</h2>
+      <h2 class="game-title-sm">УГАДАЙ НАШУ ПЕСНЮ</h2>
       <div class="radio-body">
         <div class="radio-speaker" id="radio-speaker"></div>
         <div class="radio-light off" id="radio-light"></div>
@@ -731,11 +1102,21 @@
 <div id="game-4" class="screen">
   <div class="game-screen-inner">
     <button class="back-btn" onclick="goBack()">← НАЗАД</button>
-    <div class="placeholder-wrap">
-      <span class="placeholder-icon">🌀</span>
-      <h2 class="placeholder-title">ЛАБИРИНТ</h2>
-      <p class="placeholder-text">Игра в разработке...<br>Скоро появится!</p>
-      <button class="key-btn" id="key-btn-4" onclick="collectKeyFromGame(3)">✦ ЗАБРАТЬ КЛЮЧ</button>
+    <div class="maze-wrap">
+      <div class="maze-header">
+        <h2 class="game-title-sm">НАЙДИ МЕНЯ</h2>
+        <div class="maze-steps">ШАГОВ:&nbsp;<span id="maze-steps">0</span></div>
+      </div>
+      <div class="maze-grid" id="maze-grid"></div>
+      <div class="maze-arrows">
+        <button class="maze-arrow-btn maze-arr-u" onclick="maze.move(-1,0)"></button>
+        <div class="maze-arrow-row">
+          <button class="maze-arrow-btn maze-arr-l" onclick="maze.move(0,-1)"></button>
+          <button class="maze-arrow-btn maze-arr-d" onclick="maze.move(1,0)"></button>
+          <button class="maze-arrow-btn maze-arr-r" onclick="maze.move(0,1)"></button>
+        </div>
+      </div>
+      <div class="maze-status" id="maze-status"></div>
     </div>
   </div>
 </div>
@@ -746,11 +1127,16 @@
 <div id="game-5" class="screen">
   <div class="game-screen-inner">
     <button class="back-btn" onclick="goBack()">← НАЗАД</button>
-    <div class="placeholder-wrap">
-      <span class="placeholder-icon">🔤</span>
-      <h2 class="placeholder-title">СЛОВО</h2>
-      <p class="placeholder-text">Игра в разработке...<br>Скоро появится!</p>
-      <button class="key-btn" id="key-btn-5" onclick="collectKeyFromGame(4)">✦ ЗАБРАТЬ КЛЮЧ</button>
+    <div class="word-wrap">
+      <h2 class="game-title-sm">СОБЕРИ СЛОВО</h2>
+      <div class="word-hint" id="word-hint"></div>
+      <div class="word-bank" id="word-bank"></div>
+      <div class="word-slots" id="word-slots"></div>
+      <div class="word-controls">
+        <button class="word-ctrl-btn" onclick="wordGame.hint()">ПОДСКАЗКА</button>
+        <button class="word-ctrl-btn" onclick="wordGame.reset()">СБРОС</button>
+      </div>
+      <div class="word-status" id="word-status"></div>
     </div>
   </div>
 </div>
@@ -761,11 +1147,12 @@
 <div id="game-6" class="screen">
   <div class="game-screen-inner">
     <button class="back-btn" onclick="goBack()">← НАЗАД</button>
-    <div class="placeholder-wrap">
-      <span class="placeholder-icon">❤️</span>
-      <h2 class="placeholder-title">ЛЮБОВЬ</h2>
-      <p class="placeholder-text">Игра в разработке...<br>Скоро появится!</p>
-      <button class="key-btn" id="key-btn-6" onclick="collectKeyFromGame(5)">✦ ЗАБРАТЬ КЛЮЧ</button>
+    <div class="love-wrap">
+      <p class="love-text">НАЖМИ СТОЛЬКО РАЗ<br>СКОЛЬКО ЛЮБИШЬ</p>
+      <button class="love-heart-btn" id="love-heart-btn" onclick="loveGame.tap(this)">♥</button>
+      <div class="love-counter" id="love-counter">0</div>
+      <div class="love-extra" id="love-extra"></div>
+      <button class="key-btn" id="love-done-btn" style="display:none" onclick="showKeyWon(5)">ГОТОВО ✦</button>
     </div>
   </div>
 </div>
@@ -776,13 +1163,14 @@
 <div id="key-won-overlay" class="key-won-overlay">
   <span class="key-won-key">🗝️</span>
   <div class="key-won-title">КЛЮЧ ПОЛУЧЕН ✦</div>
+  <div class="key-won-count" id="key-won-count">КЛЮЧЕЙ: 0/6</div>
   <button class="back-btn" onclick="keyWonBack()">← НАЗАД</button>
 </div>
 
 <!-- ===========================================================
      СКРИПТЫ
      =========================================================== -->
-<script src="data.js"></script>
+<script src="data.js?v=3"></script>
 <script>
 'use strict';
 
@@ -863,17 +1251,17 @@ function goToGame(gameId) {
   if      (gameId === 1) puzzle.init();
   else if (gameId === 2) hearts.init();
   else if (gameId === 3) song.init();
-
-  // Синхронизировать состояние кнопки ключа для игр 4-6
-  var btn = document.getElementById('key-btn-' + gameId);
-  if (btn && keysCollected[gameId - 1]) {
-    markKeyBtnDone(btn);
-  }
+  else if (gameId === 4) maze.init();
+  else if (gameId === 5) wordGame.init();
+  else if (gameId === 6) loveGame.init();
 }
 
 function goBack() {
   playBack();
   if (hearts.running) hearts.stop();
+  if (song._audio) { song._audio.pause(); song._audio.currentTime = 0; }
+  clearTimeout(song._stopT);
+  maze._removeControls();
   showScreen('main-screen');
 }
 
@@ -937,57 +1325,126 @@ function wait(ms) {
   return new Promise(function(resolve) { setTimeout(resolve, ms); });
 }
 
+// ============================================================
+// ФИНАЛЬНЫЙ ЭКРАН — звёзды и частицы
+// ============================================================
+function initStars() {
+  var bg = document.getElementById('stars-bg');
+  if (!bg || bg.children.length > 0) return;
+  for (var i = 0; i < 80; i++) {
+    var s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.top  = (Math.random() * 100) + '%';
+    s.style.setProperty('--d',   (1.5 + Math.random() * 3.5) + 's');
+    s.style.setProperty('--del', (Math.random() * 4) + 's');
+    bg.appendChild(s);
+  }
+}
+
+function fireParticles(anchorEl) {
+  var rect = anchorEl.getBoundingClientRect();
+  var cx = rect.left + rect.width  / 2;
+  var cy = rect.top  + rect.height / 2;
+  var cols = ['var(--green)', 'var(--purple)', 'var(--red)', '#ffffff', '#ffe000', '#00ccff'];
+  for (var i = 0; i < 44; i++) {
+    (function() {
+      var p = document.createElement('div');
+      p.className = 'finale-particle';
+      p.style.background = cols[i % cols.length];
+      var angle = (i / 44) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+      var dist  = 80 + Math.random() * 220;
+      p.style.setProperty('--px', Math.cos(angle) * dist + 'px');
+      p.style.setProperty('--py', Math.sin(angle) * dist + 'px');
+      p.style.setProperty('--dur', (0.65 + Math.random() * 0.7) + 's');
+      p.style.left = (cx - 4) + 'px';
+      p.style.top  = (cy - 4) + 'px';
+      document.body.appendChild(p);
+      p.addEventListener('animationend', function() {
+        if (p.parentNode) p.parentNode.removeChild(p);
+      });
+    })();
+  }
+}
+
+function _populateFinaleContent() {
+  document.getElementById('finale-message').textContent = data.chestMessage;
+  var wrap = document.getElementById('finale-video-wrap');
+  wrap.innerHTML = '';
+  if (data.chestVideoUrl) {
+    var vid = document.createElement('video');
+    vid.className   = 'finale-video';
+    vid.src         = data.chestVideoUrl;
+    vid.controls    = true;
+    vid.playsInline = true;
+    vid.muted       = true;
+    vid.autoplay    = true;
+    wrap.appendChild(vid);
+  }
+  document.getElementById('finale-names').innerHTML =
+    data.names.from + ' <span class="finale-heart-ico">♥</span> ' + data.names.to;
+}
+
 async function openChestAnimated() {
-  var box    = document.getElementById('chest-box');
-  var emoji  = document.getElementById('chest-emoji');
-  var status = document.getElementById('chest-status');
+  var fin  = document.getElementById('chest-finale-screen');
+  var icon = document.getElementById('finale-chest-icon');
 
+  initStars();
+  fin.classList.add('active-finale');
+
+  await wait(220);
+
+  // Шаг 1: сундук растёт
   playChestSound();
+  icon.style.animation = 'finaleGrow 0.7s ease forwards';
+  await wait(720);
 
-  // Шаг 1: тряска
-  box.classList.add('shaking');
-  await wait(560);
-  box.classList.remove('shaking');
+  // Шаг 2: трясётся
+  icon.style.animation = 'finaleShake 0.5s ease';
+  await wait(500);
 
-  // Шаг 2: взрыв свечения
-  box.classList.add('unlocked');
-  emoji.textContent = '💫';
-  box.classList.add('glow-burst');
-  await wait(1000);
-  box.classList.remove('glow-burst');
+  // Шаг 3: взрыв частиц
+  icon.style.animation = '';
+  icon.style.transform = 'scale(3)';
+  fireParticles(icon);
 
-  emoji.textContent = '🎁';
+  // Победные ноты
+  [392, 494, 587, 698, 880, 1047].forEach(function(f, i) {
+    playTone(f, 0.3, i * 0.1, 'triangle');
+  });
 
-  // Шаг 3: смена статуса
-  status.textContent = 'ОТКРЫТО!';
-  status.classList.add('open-text');
+  await wait(220);
 
-  // Шаг 4: контент
-  await wait(400);
-  showChestContent();
+  // Шаг 4: плавно меняет emoji на ✦
+  icon.style.transition = 'opacity 0.28s ease';
+  icon.style.opacity    = '0';
+  await wait(300);
+  icon.textContent      = '✦';
+  icon.style.color      = 'var(--green)';
+  icon.style.textShadow = '0 0 20px var(--green), 0 0 60px var(--green), 0 0 120px var(--green)';
+  icon.style.opacity    = '1';
+
+  await wait(700);
+
+  // Шаг 5: послание
+  _populateFinaleContent();
+  document.getElementById('finale-content').style.display = 'block';
 }
 
 function openChestInstant() {
-  var box    = document.getElementById('chest-box');
-  var emoji  = document.getElementById('chest-emoji');
-  var status = document.getElementById('chest-status');
+  var fin  = document.getElementById('chest-finale-screen');
+  var icon = document.getElementById('finale-chest-icon');
 
-  box.classList.add('unlocked');
-  emoji.textContent = '🎁';
-  status.textContent = 'ОТКРЫТО!';
-  status.classList.add('open-text');
-  showChestContent();
-}
+  initStars();
+  fin.classList.add('active-finale');
 
-function showChestContent() {
-  var container = document.getElementById('chest-content');
-  var html = '<p class="chest-message-text">' + data.chestMessage + '</p>';
-  if (data.chestVideoUrl) {
-    html += '<video class="chest-video" src="' + data.chestVideoUrl
-          + '" controls playsinline></video>';
-  }
-  container.innerHTML = html;
-  container.style.display = 'block';
+  icon.textContent      = '✦';
+  icon.style.transform  = 'scale(3)';
+  icon.style.color      = 'var(--green)';
+  icon.style.textShadow = '0 0 20px var(--green), 0 0 60px var(--green), 0 0 120px var(--green)';
+
+  _populateFinaleContent();
+  document.getElementById('finale-content').style.display = 'block';
 }
 
 // ============================================================
@@ -1065,8 +1522,14 @@ function renderGameGrid() {
 // КЛЮЧ ПОЛУЧЕН — ОВЕРЛЕЙ
 // ============================================================
 function showKeyWon(gameIndex) {
+  // Останавливаем песню при получении любого ключа
+  if (song._audio) { song._audio.pause(); song._audio.currentTime = 0; }
+  clearTimeout(song._stopT);
   playKeySound();
   collectKey(gameIndex);
+  var count = keysCollected.filter(Boolean).length;
+  var el = document.getElementById('key-won-count');
+  if (el) el.textContent = 'КЛЮЧЕЙ: ' + count + '/6';
   document.getElementById('key-won-overlay').classList.add('active');
 }
 
@@ -1100,7 +1563,6 @@ var puzzle = {
     if (this.order.every(function(v,i){ return v===i; })) {
       this.order[0] = 1; this.order[1] = 0;
     }
-    this.imgSrc = (data.photos && data.photos[0]) ? data.photos[0] : null;
     this.render();
     document.getElementById('puzzle-moves').textContent = '0';
     document.getElementById('puzzle-status').textContent = '';
@@ -1117,6 +1579,7 @@ var puzzle = {
     var grid = document.getElementById('puzzle-grid');
     grid.innerHTML = '';
     var self = this;
+    var img = (data.photos && data.photos[0]) || data.photo || null;
     for (var cellIdx = 0; cellIdx < 9; cellIdx++) {
       var piece = document.createElement('div');
       piece.className = 'puzzle-piece';
@@ -1125,8 +1588,8 @@ var puzzle = {
       var row = Math.floor(pieceIdx / 3);
       var col = pieceIdx % 3;
 
-      if (self.imgSrc) {
-        piece.style.backgroundImage = 'url(' + self.imgSrc + ')';
+      if (img) {
+        piece.style.backgroundImage = 'url(' + img + ')';
         piece.style.backgroundSize = '300% 300%';
         piece.style.backgroundPosition = (col * 50) + '% ' + (row * 50) + '%';
         piece.style.color = 'transparent';
@@ -1316,6 +1779,9 @@ var song = {
 
   init: function() {
     this.won = false;
+    // Остановить аудио если было запущено
+    if (this._audio) { this._audio.pause(); this._audio.currentTime = 0; }
+    clearTimeout(this._stopT);
     // Сгенерировать точки радио
     var sp = document.getElementById('radio-speaker');
     if (sp) {
@@ -1346,15 +1812,43 @@ var song = {
   },
 
   playMelody: function() {
-    [523, 659, 784].forEach(function(f, i){ playTone(f, 0.28, i * 0.33, 'sine'); });
     var btn   = document.getElementById('song-play-btn');
     var light = document.getElementById('radio-light');
-    if (btn)   btn.classList.add('playing');
-    if (light) light.classList.remove('off');
-    setTimeout(function(){
-      if (btn)   btn.classList.remove('playing');
-      if (light) light.classList.add('off');
-    }, 1100);
+
+    if (data.songFile) {
+      // Реальный аудиофайл
+      if (!this._audio) {
+        this._audio = new Audio(data.songFile);
+        this._audio.preload = 'auto';
+        this._audio.volume = 0.3;
+      }
+      var a = this._audio;
+      a.currentTime = 0;
+      a.play().catch(function(){});
+      if (btn)   btn.classList.add('playing');
+      if (light) light.classList.remove('off');
+      var self = this;
+      a.onended = function() {
+        if (btn)   btn.classList.remove('playing');
+        if (light) light.classList.add('off');
+      };
+      // Стоп через 30 сек на случай длинного трека
+      clearTimeout(this._stopT);
+      this._stopT = setTimeout(function(){
+        a.pause(); a.currentTime = 0;
+        if (btn)   btn.classList.remove('playing');
+        if (light) light.classList.add('off');
+      }, 30000);
+    } else {
+      // Запасной вариант — синтезированные ноты
+      [523, 659, 784].forEach(function(f, i){ playTone(f, 0.28, i * 0.33, 'sine'); });
+      if (btn)   btn.classList.add('playing');
+      if (light) light.classList.remove('off');
+      setTimeout(function(){
+        if (btn)   btn.classList.remove('playing');
+        if (light) light.classList.add('off');
+      }, 1100);
+    }
   },
 
   _guess: function(index, btn) {
@@ -1379,19 +1873,382 @@ var song = {
 };
 
 // ============================================================
+// ИГРА 4 — ЛАБИРИНТ
+// ============================================================
+var maze = {
+  MAP: [
+    [0,0,0,1,0,0,0,0,0,0,0],
+    [1,1,0,1,0,1,1,1,1,1,0],
+    [0,0,0,1,0,0,0,0,0,1,0],
+    [0,1,1,1,1,1,1,1,0,1,0],
+    [0,0,0,0,0,0,0,1,0,1,0],
+    [1,1,1,1,1,1,0,1,0,0,0],
+    [0,0,0,0,0,1,0,1,1,1,0],
+    [0,1,1,1,0,1,0,0,0,1,0],
+    [0,1,0,0,0,1,1,1,0,1,0],
+    [0,1,0,1,1,1,0,0,0,1,0],
+    [0,0,0,0,0,0,0,1,0,0,0]
+  ],
+  R: 11, C: 11,
+  row: 0, col: 0,
+  steps: 0,
+  won: false,
+  _kh: null, _ts: null, _te: null,
+  _sx: 0, _sy: 0,
+
+  init: function() {
+    this.row = 0; this.col = 0; this.steps = 0; this.won = false;
+    document.getElementById('maze-steps').textContent = '0';
+    document.getElementById('maze-status').textContent = '';
+    this.render();
+    this._setupControls();
+  },
+
+  render: function() {
+    var grid = document.getElementById('maze-grid');
+    grid.innerHTML = '';
+    for (var r = 0; r < this.R; r++) {
+      for (var c = 0; c < this.C; c++) {
+        var cell = document.createElement('div');
+        if      (r === this.row && c === this.col) { cell.className = 'maze-cell player-cell'; cell.textContent = '♥'; }
+        else if (r === 10 && c === 10)             { cell.className = 'maze-cell goal-cell';   cell.textContent = '★'; }
+        else if (this.MAP[r][c] === 1)             { cell.className = 'maze-cell wall'; }
+        else                                        { cell.className = 'maze-cell path'; }
+        grid.appendChild(cell);
+      }
+    }
+  },
+
+  move: function(dr, dc) {
+    if (this.won) return;
+    var nr = this.row + dr, nc = this.col + dc;
+    if (nr < 0 || nr >= this.R || nc < 0 || nc >= this.C) return;
+    if (this.MAP[nr][nc] === 1) { playTone(180, 0.05, 0, 'square'); return; }
+    this.row = nr; this.col = nc;
+    this.steps++;
+    document.getElementById('maze-steps').textContent = this.steps;
+    playTone(440, 0.04);
+    this.render();
+    if (nr === 10 && nc === 10) this._win();
+  },
+
+  _win: function() {
+    this.won = true;
+    document.getElementById('maze-status').textContent = 'НАШЁЛ! ♥';
+    document.querySelectorAll('.maze-cell').forEach(function(c){ c.classList.add('win-cell'); });
+    this._removeControls();
+    setTimeout(function(){ showKeyWon(3); }, 1300);
+  },
+
+  _setupControls: function() {
+    this._removeControls();
+    var self = this;
+    this._kh = function(e) {
+      var map = { ArrowUp:[-1,0], ArrowDown:[1,0], ArrowLeft:[0,-1], ArrowRight:[0,1] };
+      if (map[e.key]) { e.preventDefault(); self.move(map[e.key][0], map[e.key][1]); }
+    };
+    this._ts = function(e) { self._sx = e.changedTouches[0].clientX; self._sy = e.changedTouches[0].clientY; };
+    this._te = function(e) {
+      var dx = e.changedTouches[0].clientX - self._sx;
+      var dy = e.changedTouches[0].clientY - self._sy;
+      if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+      if (Math.abs(dx) > Math.abs(dy)) self.move(0, dx > 0 ? 1 : -1);
+      else                              self.move(dy > 0 ? 1 : -1, 0);
+    };
+    document.addEventListener('keydown', this._kh);
+    var g = document.getElementById('game-4');
+    g.addEventListener('touchstart', this._ts, { passive: true });
+    g.addEventListener('touchend',   this._te, { passive: true });
+  },
+
+  _removeControls: function() {
+    if (this._kh) document.removeEventListener('keydown', this._kh);
+    var g = document.getElementById('game-4');
+    if (g && this._ts) g.removeEventListener('touchstart', this._ts);
+    if (g && this._te) g.removeEventListener('touchend',   this._te);
+    this._kh = this._ts = this._te = null;
+  }
+};
+
+// ============================================================
+// ИГРА 5 — СЛОВО
+// ============================================================
+var wordGame = {
+  word: '',
+  letters: [],
+  answer: [],
+  won: false,
+
+  init: function() {
+    this.won = false;
+    this.word = (data.secretWord || 'СЛОВО').toUpperCase();
+    var arr = this.word.split('').map(function(ch, i){ return { ch: ch, id: i, placed: false }; });
+    // Shuffle
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    // Ensure not already solved
+    if (arr.length > 1 && arr.every(function(l, i){ return l.ch === this.word[i]; }, this)) {
+      var t2 = arr[0]; arr[0] = arr[1]; arr[1] = t2;
+    }
+    this.letters = arr;
+    this.answer  = new Array(this.word.length).fill(null);
+    document.getElementById('word-hint').textContent = '';
+    document.getElementById('word-status').textContent = '';
+    document.getElementById('word-status').className = 'word-status';
+    this._renderBank();
+    this._renderSlots();
+  },
+
+  _renderBank: function() {
+    var bank = document.getElementById('word-bank');
+    bank.innerHTML = '';
+    var self = this;
+    this.letters.forEach(function(l) {
+      if (l.placed) return;
+      var tile = document.createElement('div');
+      tile.className = 'letter-tile';
+      tile.textContent = l.ch;
+      tile.addEventListener('click', function(){ self._fromBank(l.id); });
+      bank.appendChild(tile);
+    });
+  },
+
+  _renderSlots: function() {
+    var container = document.getElementById('word-slots');
+    container.innerHTML = '';
+    var self = this;
+    this.answer.forEach(function(lid, si) {
+      var slot = document.createElement('div');
+      var letter = lid !== null ? self.letters.find(function(l){ return l.id === lid; }) : null;
+      slot.className = 'letter-slot' + (letter ? ' filled' : '');
+      slot.textContent = letter ? letter.ch : '';
+      if (letter) slot.addEventListener('click', function(){ self._fromSlot(si); });
+      container.appendChild(slot);
+    });
+  },
+
+  _fromBank: function(lid) {
+    if (this.won) return;
+    var next = this.answer.indexOf(null);
+    if (next === -1) return;
+    this.letters.find(function(l){ return l.id === lid; }).placed = true;
+    this.answer[next] = lid;
+    playTone(440, 0.06);
+    this._renderBank();
+    this._renderSlots();
+    if (this.answer.indexOf(null) === -1) { var self = this; setTimeout(function(){ self._check(); }, 120); }
+  },
+
+  _fromSlot: function(si) {
+    if (this.won) return;
+    var lid = this.answer[si];
+    if (lid === null) return;
+    this.letters.find(function(l){ return l.id === lid; }).placed = false;
+    this.answer[si] = null;
+    playTone(330, 0.06);
+    this._renderBank();
+    this._renderSlots();
+  },
+
+  _check: function() {
+    var self = this;
+    var formed = this.answer.map(function(id){ return self.letters.find(function(l){ return l.id === id; }).ch; }).join('');
+    if (formed === this.word) {
+      this.won = true;
+      document.querySelectorAll('.letter-slot').forEach(function(s){ s.classList.add('correct-slot'); });
+      document.getElementById('word-status').textContent = 'ВЕРНО!';
+      document.getElementById('word-status').className = 'word-status correct-text';
+      playTone(660,0.1,0); playTone(784,0.1,0.12); playTone(1047,0.22,0.25);
+      setTimeout(function(){ showKeyWon(4); }, 1400);
+    } else {
+      document.querySelectorAll('.letter-slot').forEach(function(s){ s.classList.add('wrong-slot'); });
+      document.getElementById('word-status').textContent = 'НЕ ТАК — ПОПРОБУЙ ЕЩЁ';
+      document.getElementById('word-status').className = 'word-status wrong-text';
+      playTone(200, 0.3, 0, 'sawtooth');
+      setTimeout(function(){ self.reset(); }, 900);
+    }
+  },
+
+  hint: function() { document.getElementById('word-hint').textContent = data.secretWordHint || ''; },
+
+  reset: function() {
+    this.letters.forEach(function(l){ l.placed = false; });
+    this.answer = new Array(this.word.length).fill(null);
+    document.getElementById('word-status').textContent = '';
+    document.getElementById('word-status').className = 'word-status';
+    this._renderBank();
+    this._renderSlots();
+  }
+};
+
+// ============================================================
+// ИГРА 6 — ЛЮБОВЬ
+// ============================================================
+var loveGame = {
+  count: 0,
+  init: function() {
+    this.count = 0;
+    document.getElementById('love-counter').textContent = '0';
+    document.getElementById('love-extra').textContent = '';
+    document.getElementById('love-done-btn').style.display = 'none';
+    var btn = document.getElementById('love-heart-btn');
+    btn.classList.remove('exploding');
+    btn.style.visibility = '';
+    btn.style.pointerEvents = '';
+  },
+
+  tap: function(btn) {
+    if (this.count >= 100) return;
+    this.count++;
+    document.getElementById('love-counter').textContent = this.count;
+    playTone(Math.min(200 + this.count * 28, 1200), 0.1, 0, 'sine');
+    if (this.count < 100) {
+      btn.style.transform = 'scale(1.22)';
+      setTimeout(function(){ btn.style.transform = ''; }, 110);
+      this._burst(btn, 6);
+    } else {
+      this._explode(btn);
+    }
+  },
+
+  _explode: function(btn) {
+    // Boom sounds: low thuds then ascending celebration
+    playTone(180, 0.45, 0,    'sawtooth');
+    playTone(130, 0.55, 0.07, 'sawtooth');
+    playTone(90,  0.65, 0.16, 'sawtooth');
+    [523, 659, 784, 880, 1047, 1319].forEach(function(f, i) {
+      playTone(f, 0.18, 0.38 + i * 0.09, 'sine');
+    });
+    // Scale-up then burst animation
+    btn.classList.add('exploding');
+    btn.style.pointerEvents = 'none';
+    // Shower of hearts in all directions
+    this._burst(btn, 30);
+    setTimeout(function() {
+      btn.style.visibility = 'hidden';
+      document.getElementById('love-done-btn').style.display = 'inline-block';
+    }, 880);
+  },
+
+  _burst: function(btn, n) {
+    n = n || 6;
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width  / 2;
+    var cy = rect.top  + rect.height / 2;
+    var big = n > 10;
+    for (var i = 0; i < n; i++) {
+      var h = document.createElement('div');
+      h.className = 'love-mini-heart' + (big ? ' big-burst' : '');
+      h.textContent = '♥';
+      var angle = (i / n) * Math.PI * 2 + (Math.random() - 0.5) * 0.9;
+      var dist  = (big ? 70 : 44) + Math.random() * (big ? 110 : 44);
+      h.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+      h.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
+      h.style.left = (cx - 9) + 'px';
+      h.style.top  = (cy - 9) + 'px';
+      document.body.appendChild(h);
+      h.addEventListener('animationend', function(){ if (h.parentNode) h.parentNode.removeChild(h); });
+    }
+  }
+};
+
+// ============================================================
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================================
+// ============================================================
+// ИНТРО
+// ============================================================
+function playTypeClick() {
+  try {
+    var ctx  = getAudioCtx();
+    var osc  = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(700 + Math.random() * 300, ctx.currentTime);
+    gain.gain.setValueAtTime(0.055, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.038);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.038);
+  } catch(e) {}
+}
+
+async function runIntro() {
+  var l1  = document.getElementById('intro-line1');
+  var l2  = document.getElementById('intro-line2');
+  var l3  = document.getElementById('intro-line3');
+  var btn = document.getElementById('intro-btn');
+
+  async function type(el, text) {
+    el.textContent = '';
+    for (var i = 0; i < text.length; i++) {
+      el.textContent = text.slice(0, i + 1) + '|';
+      playTypeClick();
+      await wait(65);
+    }
+    el.textContent = text;
+  }
+
+  await wait(500);
+  await type(l1, data.names.to + '...');
+  await wait(900);
+  await type(l2, 'У МЕНЯ ЕСТЬ ДЛЯ ТЕБЯ КОЕ-ЧТО...');
+  await wait(900);
+  await type(l3, 'ГОТОВА СЫГРАТЬ?');
+  await wait(300);
+  btn.style.display = 'inline-block';
+}
+
+function startFromIntro() {
+  playBeep();
+  var wipe = document.getElementById('scanline-wipe');
+  wipe.classList.add('wiping');
+  setTimeout(function() {
+    showScreen('main-screen');
+  }, 290);
+  setTimeout(function() {
+    wipe.classList.remove('wiping');
+    checkChest(true);
+  }, 590);
+}
+
+// ============================================================
+// СБРОС ПРОГРЕССА
+// ============================================================
+function resetProgress() {
+  if (!confirm('Сбросить весь прогресс?\nВсе ключи будут потеряны.')) return;
+  localStorage.removeItem('loveQuestKeys');
+  location.reload();
+}
+
 window.addEventListener('load', function() {
   loadProgress();
-
-  // Имена из data.js
   document.getElementById('names-label').textContent =
     data.names.from + ' → ' + data.names.to;
-
   renderGameGrid();
-  updateKeyCounter(false);   // показать счётчик без вспышки
-  checkChest(true);          // если уже всё собрано — открыть без анимации
+  updateKeyCounter(false);
+  runIntro();
 });
 </script>
+
+<!-- ===========================================================
+     ФИНАЛЬНЫЙ ЭКРАН — СУНДУК (fixed overlay)
+     =========================================================== -->
+<div id="chest-finale-screen" aria-live="polite">
+  <div class="stars-bg" id="stars-bg"></div>
+  <div class="chest-finale-inner">
+    <div class="finale-chest-icon" id="finale-chest-icon">🗝️</div>
+    <div class="finale-content" id="finale-content" style="display:none">
+      <p class="finale-message" id="finale-message"></p>
+      <div id="finale-video-wrap"></div>
+      <p class="finale-names-row" id="finale-names"></p>
+      <button class="reset-btn" onclick="resetProgress()" style="margin-top:40px">СБРОСИТЬ ПРОГРЕСС</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
